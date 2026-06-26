@@ -1,0 +1,4 @@
+interface:
+  display_name: "AFML Webbook Chapter Review"
+  short_description: "Review one AFML web-book chapter at a time."
+  default_prompt: "Use $afml-webbook-chapter-review to review and repair one AFML static web-book chapter with math, finance, and layout checks."

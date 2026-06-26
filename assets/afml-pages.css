@@ -1,0 +1,56 @@
+html {
+  background: #e8edf3;
+}
+
+body {
+  margin: 0;
+  background: #e8edf3;
+}
+
+.pdf-book {
+  padding: 28px 0;
+}
+
+.page-anchor {
+  display: block;
+  height: 0;
+}
+
+.pdf-page {
+  position: relative;
+  margin: 0 auto 28px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(31, 41, 55, 0.18);
+}
+
+.pdf-text,
+.pdf-image {
+  position: absolute;
+}
+
+.pdf-text {
+  display: block;
+  overflow: visible;
+  white-space: nowrap;
+  text-rendering: geometricPrecision;
+}
+
+.pdf-image {
+  object-fit: contain;
+  -webkit-user-drag: none;
+}
+
+@media print {
+  body,
+  .pdf-book {
+    padding: 0;
+    background: #fff;
+  }
+
+  .pdf-page {
+    margin: 0 auto;
+    box-shadow: none;
+    break-after: page;
+  }
+}
