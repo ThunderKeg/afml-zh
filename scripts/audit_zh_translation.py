@@ -13,6 +13,7 @@ BOOK = ROOT / "book"
 ZH = ROOT / "zh"
 CHINESE_RE = re.compile(r"[\u4e00-\u9fff]")
 PLACEHOLDER_RE = re.compile(r"__AFML_KEEP_\d+__")
+EXCLUDED_PAGES = {"book-index.html"}
 BAD_TEXT_PATTERNS = [
     re.compile(pattern)
     for pattern in (
@@ -68,7 +69,10 @@ def main() -> int:
     failures: list[str] = []
     if not ZH.exists():
         failures.append("zh/: translated site directory is missing")
-    pages = sorted(BOOK.glob("*.html"))
+    for excluded_page in EXCLUDED_PAGES:
+        if (ZH / excluded_page).exists():
+            failures.append(f"zh/{excluded_page} should not exist in the static Chinese site")
+    pages = [page for page in sorted(BOOK.glob("*.html")) if page.name not in EXCLUDED_PAGES]
     print("page\tzh_ratio\tmath\tcode\tfigures\timages")
     for page in pages:
         zh_page = ZH / page.name
@@ -91,6 +95,9 @@ def main() -> int:
             if len(src.select(selector)) != len(zh.select(selector)):
                 failures.append(f"{zh_page.name}: selector count differs for {selector}")
         html = zh_page.read_text(encoding="utf-8")
+        for excluded_page in EXCLUDED_PAGES:
+            if f'href="{excluded_page}"' in html:
+                failures.append(f"{zh_page.name}: links to excluded page {excluded_page}")
         if PLACEHOLDER_RE.search(html):
             failures.append(f"{zh_page.name}: placeholder leaked")
         for pattern in BAD_TEXT_PATTERNS:
@@ -102,7 +109,7 @@ def main() -> int:
             if src_attr.startswith("media/") and not (ZH / src_attr).exists():
                 failures.append(f"{zh_page.name}: missing image {src_attr}")
         ratio = article_chinese_ratio(zh)
-        if page.name not in {"book-index.html"} and ratio < 0.35:
+        if ratio < 0.35:
             failures.append(f"{zh_page.name}: Chinese ratio too low ({ratio:.3f})")
         print(
             "\t".join(

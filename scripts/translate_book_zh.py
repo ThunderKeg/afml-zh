@@ -25,6 +25,7 @@ GLOSSARY_PATH = TRANSLATIONS / "glossary.json"
 ERROR_PATH = TRANSLATIONS / "last-error.json"
 ZH_CSS = ASSETS / "afml-book-zh.css"
 ZH_JS = ASSETS / "afml-book-zh.js"
+EXCLUDED_PAGES = {"book-index.html"}
 
 SKIP_ANCESTORS = {
     "script",
@@ -509,7 +510,31 @@ def apply_cache_to_soup(soup: BeautifulSoup, cache: dict[str, str]) -> None:
             node.replace_with(NavigableString(PLACEHOLDER_RE.sub("", str(node))))
 
 
+def remove_excluded_page_links(html: str) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+    changed = False
+    for excluded_page in EXCLUDED_PAGES:
+        for link in list(soup.select(f'a[href="{excluded_page}"]')):
+            toc_part = link.find_parent("li", class_="toc-part")
+            if toc_part is not None:
+                toc_part.decompose()
+            else:
+                toc_chapter = link.find_parent("li", class_="toc-chapter")
+                if toc_chapter is not None:
+                    toc_chapter.decompose()
+                else:
+                    link.decompose()
+            changed = True
+    if not changed:
+        return html
+    for pager in soup.select(".chapter-pager"):
+        if not pager.get_text(" ", strip=True):
+            pager.decompose()
+    return str(soup)
+
+
 def finalize_html(html: str, page_name: str) -> str:
+    html = remove_excluded_page_links(html)
     if page_name == "chapter-18.html":
         replacements = {
             "从而使 <span class=\"math inline\">\\(|r_t|\\)</span> 并减少对大字母表的需求。": "从而使 <span class=\"math inline\">\\(|r_t|\\)</span> 的分布更加规则，并减少对大字母表的需求。",
@@ -588,7 +613,7 @@ def translate_pages(args: argparse.Namespace) -> None:
     if not cache_path.is_absolute():
         cache_path = ROOT / cache_path
     cache: dict[str, str] = load_json(cache_path, {})
-    pages = sorted(BOOK.glob("*.html"))
+    pages = [page for page in sorted(BOOK.glob("*.html")) if page.name not in EXCLUDED_PAGES]
     if args.pages:
         wanted = set(args.pages)
         pages = [page for page in pages if page.name in wanted or page.stem in wanted]
