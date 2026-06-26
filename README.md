@@ -34,3 +34,11 @@ Reports:
 
 - `docs/full-book-review.md`
 - `docs/browser-layout-review.md`
+
+## GitHub Pages
+
+The repository includes a GitHub Pages workflow at `.github/workflows/pages.yml`.
+
+The deployed site artifact contains only the static website files: `index.html`, `.nojekyll`, `assets/`, and `book/`.
+
+See `docs/github-pages.md` before making the repository or site public.
