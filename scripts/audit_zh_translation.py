@@ -50,7 +50,17 @@ BAD_TEXT_PATTERNS = [
 
 
 def text_of_math(soup: BeautifulSoup) -> list[str]:
-    return [node.get_text("", strip=False) for node in soup.select(".math.inline,.math.display")]
+    clone = BeautifulSoup(str(soup), "html.parser")
+    for node in clone.select("p.footnote,.footnotes"):
+        node.decompose()
+    return [node.get_text("", strip=False) for node in clone.select(".math.inline,.math.display")]
+
+
+def text_of_footnote_math(soup: BeautifulSoup) -> list[str]:
+    return [
+        node.get_text("", strip=False)
+        for node in soup.select("p.footnote .math.inline,p.footnote .math.display,.footnotes .math.inline,.footnotes .math.display")
+    ]
 
 
 def text_of_code(soup: BeautifulSoup) -> list[str]:
@@ -100,6 +110,8 @@ def main() -> int:
         zh_math = text_of_math(zh)
         if src_math != zh_math:
             failures.append(f"{zh_page.name}: MathJax nodes differ from source")
+        if text_of_footnote_math(src) != text_of_footnote_math(zh):
+            failures.append(f"{zh_page.name}: footnote MathJax nodes differ from source")
         src_code = text_of_code(src)
         zh_code = text_of_code(zh)
         if src_code != zh_code:

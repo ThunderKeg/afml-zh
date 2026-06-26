@@ -1137,7 +1137,7 @@ def ensure_chapter_04_media() -> None:
     target = MEDIA / "chapter-04-figure-4-3.png"
     prefix = TMP / "chapter-04-figure-4-3-98"
     subprocess.run(
-        ["pdftoppm", "-r", "144", "-f", "98", "-l", "98", "-png", str(PDF), str(prefix)],
+        ["pdftoppm", "-r", "220", "-f", "98", "-l", "98", "-png", str(PDF), str(prefix)],
         cwd=ROOT,
         check=True,
         stdout=subprocess.DEVNULL,
@@ -1236,6 +1236,7 @@ def ensure_chapter_13_media() -> None:
         "top": (120, 150, 990, 805),
         "lower": (120, 820, 990, 1475),
         "bottom": (120, 850, 990, 1515),
+        "figure-13-17": (108, 750, 1008, 1424),
     }
     crops = {
         "chapter-13-figure-13-1.png": (204, "lower"),
@@ -1254,7 +1255,7 @@ def ensure_chapter_13_media() -> None:
         "chapter-13-figure-13-14.png": (212, "bottom"),
         "chapter-13-figure-13-15.png": (213, "top"),
         "chapter-13-figure-13-16.png": (213, "bottom"),
-        "chapter-13-figure-13-17.png": (214, "top"),
+        "chapter-13-figure-13-17.png": (214, "figure-13-17"),
         "chapter-13-figure-13-18.png": (215, "top"),
         "chapter-13-figure-13-19.png": (215, "bottom"),
         "chapter-13-figure-13-20.png": (216, "top"),
@@ -1304,7 +1305,7 @@ def ensure_chapter_15_media() -> None:
         from PIL import Image
 
         with Image.open(rendered) as image:
-            image.crop((85, 735, 795, 1210)).save(target)
+            image.crop((275, 202, 1088, 794)).save(target)
     except Exception:
         if rendered.exists():
             shutil.copy2(rendered, target)
@@ -1337,6 +1338,20 @@ def ensure_chapter_16_media() -> None:
             continue
         with Image.open(rendered) as image:
             image.crop(box).save(MEDIA / name)
+
+    name = "chapter-16-figure-16-2.png"
+    prefix = TMP / "chapter-16-figure-16-2-252"
+    rendered = TMP / "chapter-16-figure-16-2-252-252.png"
+    subprocess.run(
+        ["pdftoppm", "-r", "220", "-f", "252", "-l", "252", "-png", str(PDF), str(prefix)],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if rendered.exists():
+        with Image.open(rendered) as image:
+            image.crop((151, 199, 1169, 1790)).save(MEDIA / name)
 
 
 def ensure_chapter_17_media() -> None:
@@ -2882,6 +2897,10 @@ def chapter_16_figure_html(number: str) -> str:
             ["media/chapter-16-figure-16-1.png"],
             "Figure 16.1: Visualization of Markowitz’s curse",
         ),
+        "16.2": (
+            ["media/chapter-16-figure-16-2.png"],
+            "Figure 16.2: The complete-graph (top) and the tree-graph (bottom) structures",
+        ),
         "16.3": (
             ["media/chapter-16-figure-16-3.png"],
             "Figure 16.3: Sequence of cluster formation",
@@ -2892,7 +2911,7 @@ def chapter_16_figure_html(number: str) -> str:
         ),
         "16.5": (
             ["media/chapter-16-figure-16-5.png"],
-            "Figure 16.5: Dendrogram of cluster formation",
+            "Figure 16.5: Dendogram of cluster formation",
         ),
         "16.7": (
             ["media/chapter-16-figure-16-7-ab.png", "media/chapter-16-figure-16-7-c.png"],
@@ -2909,7 +2928,7 @@ def chapter_16_figure_html(number: str) -> str:
 
 
 def chapter_16_block_figure_html(block: Block) -> str | None:
-    for number in ("16.1", "16.3", "16.4", "16.5", "16.7", "16.8"):
+    for number in ("16.1", "16.2", "16.3", "16.4", "16.5", "16.7", "16.8"):
         if block.caption.startswith(f"Figure {number}"):
             if number == "16.7" and "Continued" in block.caption:
                 return ""
@@ -3038,8 +3057,8 @@ def chapter_22_figure_html(number: str) -> str:
 
 def chapter_22_figure_22_6_html() -> str:
     caption = (
-        "Figure 22.6: Gradient tree boosting (GTB) appears to follow recent usage too closely and therefore "
-        "is not able to predict the baseline usage as well as the newly developed method named LTAP. "
+        "Figure 22.6: Gradient tree boosting (GBT) appears to follow recent usage too closely and therefore "
+        "not able to predict the baseline usage as well as the newly develop method named LTAP. "
         "(a) GTB on Control group. (b) LTAP on Control group. (c) GTB on Passive group. "
         "(d) LTAP on Passive group. (e) GTB on Active group. (f) LTAP on Active group"
     )
@@ -6937,11 +6956,11 @@ def chapter_14_figure_html(number: str) -> str:
     figures = {
         "14.1": (
             "media/afml-229_1.jpg",
-            "Figure 14.1: Examples of drawdown (DD) and time under water (TuW)",
+            "Figure 14.1: Examples of drawdown (DD) and time under water + (TuW)",
         ),
         "14.2": (
             "media/afml-231_1.jpg",
-            "Figure 14.2: " + math_inline(r"\widehat{PSR}") + " as a function of skewness and sample length",
+            "Figure 14.2: PSR as a function of skewness and sample length",
         ),
         "14.3": (
             "media/afml-232_1.jpg",
