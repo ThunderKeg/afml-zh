@@ -1,3 +1,71 @@
+const THEME_STORAGE_KEY = "afml-theme";
+const THEME_DARK = "dark";
+const THEME_LIGHT = "light";
+let activeTheme = THEME_DARK;
+
+const safeReadTheme = () => {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+};
+
+const safeWriteTheme = theme => {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    // Ignore storage failures; the button still works for this page view.
+  }
+};
+
+const themeLabels = () => {
+  const isZh = document.documentElement.lang.toLowerCase().startsWith("zh");
+  return {
+    dark: isZh ? "深色" : "Dark",
+    light: isZh ? "浅色" : "Light",
+    label: isZh ? "切换深色/浅色模式" : "Toggle light and dark mode",
+  };
+};
+
+const updateThemeToggle = button => {
+  if (!button) return;
+  const labels = themeLabels();
+  button.textContent = activeTheme === THEME_DARK ? labels.dark : labels.light;
+  button.setAttribute("aria-label", labels.label);
+  button.setAttribute("aria-checked", String(activeTheme === THEME_DARK));
+};
+
+const applyTheme = theme => {
+  activeTheme = theme === THEME_LIGHT ? THEME_LIGHT : THEME_DARK;
+  document.documentElement.dataset.theme = activeTheme;
+  updateThemeToggle(document.querySelector(".theme-toggle"));
+};
+
+applyTheme(safeReadTheme());
+
+const installThemeToggle = () => {
+  const nav = document.querySelector(".book-topbar nav");
+  if (!nav || nav.querySelector(".theme-toggle")) return;
+  const button = document.createElement("button");
+  button.className = "theme-toggle";
+  button.type = "button";
+  button.setAttribute("role", "switch");
+  button.addEventListener("click", () => {
+    const nextTheme = activeTheme === THEME_DARK ? THEME_LIGHT : THEME_DARK;
+    applyTheme(nextTheme);
+    safeWriteTheme(nextTheme);
+  });
+  nav.appendChild(button);
+  updateThemeToggle(button);
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", installThemeToggle);
+} else {
+  installThemeToggle();
+}
+
 document.addEventListener("click", async event => {
   const button = event.target.closest(".copy-code");
   if (!button) return;

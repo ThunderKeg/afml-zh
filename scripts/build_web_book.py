@@ -12763,19 +12763,40 @@ def write_css() -> None:
     ASSET_CSS.write_text(
         """* { box-sizing: border-box; }
 :root {
+  color-scheme: dark;
+  --bg: #0f1318;
+  --ink: #f1f5f9;
+  --text: #d6dde5;
+  --muted: #9aa6b2;
+  --line: #2a333d;
+  --link: #8fb4ff;
+  --code: #171d24;
+  --code-line: #38424d;
+  --panel: #151b22;
+  --panel-strong: #1d2530;
+  --table-stripe: #131920;
+  --focus: #496a9f;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
   --bg: #ffffff;
   --ink: #444444;
+  --text: #575757;
   --muted: #777777;
   --line: #eeeeee;
   --link: #304080;
   --code: #f8f8f8;
   --code-line: #dddddd;
+  --panel: #fbfbfb;
+  --panel-strong: #f7f8fc;
+  --table-stripe: #fbfbfb;
+  --focus: #c9d0e6;
 }
 html, body { min-height: 100%; }
 body {
   margin: 0;
   background: var(--bg);
-  color: #575757;
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   line-height: 1.55;
@@ -12812,8 +12833,36 @@ article a { overflow-wrap: anywhere; }
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: center;
   gap: .7rem;
   white-space: nowrap;
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .42rem;
+  min-height: 1.9rem;
+  border: 1px solid var(--code-line);
+  border-radius: 999px;
+  padding: .18rem .58rem .18rem .32rem;
+  background: var(--panel);
+  color: var(--ink);
+  font: 600 .82rem/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+}
+.theme-toggle::before {
+  content: "";
+  width: .72rem;
+  height: .72rem;
+  border-radius: 50%;
+  background: var(--link);
+}
+.theme-toggle:hover {
+  border-color: var(--link);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 .book-layout {
   display: block;
@@ -12871,12 +12920,12 @@ article {
   color: var(--ink);
   font-size: .9rem;
   font-weight: 600;
-  background: #fbfbfb;
+  background: var(--panel);
 }
 .contents-actions a:first-child {
-  border-color: #c9d0e6;
+  border-color: var(--focus);
   color: var(--link);
-  background: #f7f8fc;
+  background: var(--panel-strong);
 }
 .contents-body {
   display: grid;
@@ -12907,15 +12956,15 @@ article {
   color: var(--ink);
   font: inherit;
   font-size: .95rem;
-  background: #ffffff;
+  background: var(--panel);
 }
 .toc-search:focus {
-  outline: 2px solid #d7ddf0;
+  outline: 2px solid var(--focus);
   outline-offset: 1px;
-  border-color: #aeb8d8;
+  border-color: var(--link);
 }
 .contents-note {
-  border-left: 3px solid #c9d0e6;
+  border-left: 3px solid var(--focus);
   padding-left: .8rem;
   color: var(--muted);
 }
@@ -12984,7 +13033,7 @@ article {
 }
 .toc-chapter {
   min-width: 0;
-  border-bottom: 1px solid #f1f1f1;
+  border-bottom: 1px solid var(--line);
   padding: .38rem 0 .45rem;
 }
 .toc-chapter[hidden] {
@@ -13038,7 +13087,7 @@ article {
 }
 .toc-sections a {
   display: block;
-  color: #666666;
+  color: var(--muted);
   font-size: .82rem;
   line-height: 1.35;
   overflow-wrap: anywhere;
@@ -13050,7 +13099,7 @@ article {
   padding-left: .8rem;
 }
 .toc-section-level-3 a {
-  color: #777777;
+  color: var(--muted);
   font-size: .78rem;
 }
 .chapter-authors {
@@ -13096,7 +13145,7 @@ main li + li { margin-top: .18rem; }
   margin-top: 0;
 }
 .citation {
-  color: #575757;
+  color: var(--text);
   font-size: .95em;
   white-space: nowrap;
 }
@@ -13106,7 +13155,7 @@ main li + li { margin-top: .18rem; }
   border-top: 1px solid var(--line);
 }
 .references-heading ~ p {
-  color: #555555;
+  color: var(--muted);
   font-size: .92rem;
   line-height: 1.5;
   margin-bottom: .65rem;
@@ -13114,7 +13163,7 @@ main li + li { margin-top: .18rem; }
 .references-list {
   margin: 0 0 1.25rem;
   padding-left: 0;
-  color: #555555;
+  color: var(--muted);
   list-style: none;
 }
 .references-list li {
@@ -13137,9 +13186,9 @@ figure.table-figure figcaption {
   margin-left: 0;
   margin-right: 0;
   padding-top: .55rem;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid var(--line);
   max-width: 52rem;
-  color: #666666;
+  color: var(--muted);
   font-size: .82rem;
   line-height: 1.4;
   text-align: left;
@@ -13176,7 +13225,7 @@ figure.table-figure figcaption {
   justify-items: center;
 }
 .panel-label {
-  color: #777777;
+  color: var(--muted);
   font-size: .78rem;
   line-height: 1;
 }
@@ -13261,8 +13310,8 @@ figure.code-listing figcaption {
 .quote-snippet {
   padding: 1rem 1.15rem;
   border: 1px solid var(--code-line);
-  border-left: 4px solid #777777;
-  background: #fafafa;
+  border-left: 4px solid var(--focus);
+  background: var(--panel);
 }
 .quote-snippet figcaption {
   margin-bottom: .65rem;
@@ -13277,7 +13326,7 @@ figure.code-listing figcaption {
   margin: 0;
 }
 .quote-snippet blockquote p {
-  color: #444444;
+  color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.05rem;
   line-height: 1.55;
@@ -13323,23 +13372,23 @@ figure.table-figure {
   border: 1px solid var(--code-line);
   border-radius: 3px;
   padding: .18rem .55rem;
-  background: #ffffff;
+  background: var(--panel);
   color: var(--muted);
   font: 600 .78rem/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   cursor: pointer;
 }
 .copy-code:hover {
   color: var(--link);
-  border-color: #aeb8d8;
+  border-color: var(--link);
 }
-code span.cn { color: #880000; }
-code span.co { color: #60a0b0; font-style: italic; }
-code span.dv { color: #40a070; }
-code span.fu { color: #06287e; }
-code span.kw { color: #007020; font-weight: 700; }
-code span.op { color: #666666; }
-code span.st { color: #4070a0; }
-code span.va { color: #19177c; }
+code span.cn { color: #ff9b9b; }
+code span.co { color: #8db3c7; font-style: italic; }
+code span.dv { color: #8ee3a1; }
+code span.fu { color: #9fc7ff; }
+code span.kw { color: #7dd3fc; font-weight: 700; }
+code span.op { color: #c8d0d8; }
+code span.st { color: #f0c674; }
+code span.va { color: #c4b5fd; }
 .formula {
   padding: .85rem 1rem;
   background: var(--code);
@@ -13399,13 +13448,13 @@ table {
   line-height: 1.42;
 }
 th, td {
-  border: 1px solid #dddddd;
+  border: 1px solid var(--code-line);
   padding: .45rem .6rem;
   text-align: left;
   vertical-align: top;
 }
-th { background: #f8f8f8; font-weight: 700; }
-tr:nth-child(even) td { background: #fbfbfb; }
+th { background: var(--panel-strong); font-weight: 700; }
+tr:nth-child(even) td { background: var(--table-stripe); }
 .semantic-table ul {
   margin: 0;
   padding-left: 1.15rem;
@@ -13478,7 +13527,75 @@ tr:nth-child(even) td { background: #fbfbfb; }
 
 def write_js() -> None:
     ASSET_JS.write_text(
-        """document.addEventListener("click", async event => {
+        """const THEME_STORAGE_KEY = "afml-theme";
+const THEME_DARK = "dark";
+const THEME_LIGHT = "light";
+let activeTheme = THEME_DARK;
+
+const safeReadTheme = () => {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+};
+
+const safeWriteTheme = theme => {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    // Ignore storage failures; the button still works for this page view.
+  }
+};
+
+const themeLabels = () => {
+  const isZh = document.documentElement.lang.toLowerCase().startsWith("zh");
+  return {
+    dark: isZh ? "深色" : "Dark",
+    light: isZh ? "浅色" : "Light",
+    label: isZh ? "切换深色/浅色模式" : "Toggle light and dark mode",
+  };
+};
+
+const updateThemeToggle = button => {
+  if (!button) return;
+  const labels = themeLabels();
+  button.textContent = activeTheme === THEME_DARK ? labels.dark : labels.light;
+  button.setAttribute("aria-label", labels.label);
+  button.setAttribute("aria-checked", String(activeTheme === THEME_DARK));
+};
+
+const applyTheme = theme => {
+  activeTheme = theme === THEME_LIGHT ? THEME_LIGHT : THEME_DARK;
+  document.documentElement.dataset.theme = activeTheme;
+  updateThemeToggle(document.querySelector(".theme-toggle"));
+};
+
+applyTheme(safeReadTheme());
+
+const installThemeToggle = () => {
+  const nav = document.querySelector(".book-topbar nav");
+  if (!nav || nav.querySelector(".theme-toggle")) return;
+  const button = document.createElement("button");
+  button.className = "theme-toggle";
+  button.type = "button";
+  button.setAttribute("role", "switch");
+  button.addEventListener("click", () => {
+    const nextTheme = activeTheme === THEME_DARK ? THEME_LIGHT : THEME_DARK;
+    applyTheme(nextTheme);
+    safeWriteTheme(nextTheme);
+  });
+  nav.appendChild(button);
+  updateThemeToggle(button);
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", installThemeToggle);
+} else {
+  installThemeToggle();
+}
+
+document.addEventListener("click", async event => {
   const button = event.target.closest(".copy-code");
   if (!button) return;
   const listing = button.closest(".code-listing");

@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parents[1]
 BOOK = ROOT / "book"
 CSS = ROOT / "assets" / "afml-book.css"
+JS = ROOT / "assets" / "afml-book.js"
 
 PROSE_PREFIXES = (
     "Suppose that I =",
@@ -71,6 +72,10 @@ def main() -> int:
         failures.append("assets/afml-book.css: generated stylesheet is missing")
     else:
         css = CSS.read_text(encoding="utf-8")
+        if ':root[data-theme="light"]' not in css:
+            failures.append("assets/afml-book.css: light theme variable block is missing")
+        if ".theme-toggle" not in css:
+            failures.append("assets/afml-book.css: theme toggle style is missing")
         caption_block = re.search(r"\.book-figure figcaption,\s*figure\.table-figure figcaption\s*\{(?P<body>[^}]*)\}", css)
         if caption_block is None:
             failures.append("assets/afml-book.css: figure/table caption style block is missing")
@@ -79,10 +84,10 @@ def main() -> int:
             for expected in (
                 "font-size: .82rem;",
                 "line-height: 1.4;",
-                "color: #666666;",
+                "color: var(--muted);",
                 "text-align: left;",
                 "padding-top: .55rem;",
-                "border-top: 1px solid #eeeeee;",
+                "border-top: 1px solid var(--line);",
                 "max-width: 52rem;",
                 "overflow-wrap: anywhere;",
             ):
@@ -139,6 +144,13 @@ def main() -> int:
         semantic_table_block = re.search(r"\.semantic-table ul\s*\{(?P<body>[^}]*)\}", css)
         if semantic_table_block is None:
             failures.append("assets/afml-book.css: semantic table list style block is missing")
+    if not JS.exists():
+        failures.append("assets/afml-book.js: generated script is missing")
+    else:
+        js = JS.read_text(encoding="utf-8")
+        for expected in ('THEME_STORAGE_KEY = "afml-theme"', "installThemeToggle", 'button.className = "theme-toggle"'):
+            if expected not in js:
+                failures.append(f"assets/afml-book.js: theme toggle logic missing `{expected}`")
 
     for path in sorted(BOOK.glob("*.html")):
         soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
