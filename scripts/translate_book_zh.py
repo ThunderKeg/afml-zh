@@ -1064,19 +1064,19 @@ html[lang="zh-CN"] sup.footnote-ref {
   line-height: 0;
 }
 html[lang="zh-CN"] sup.footnote-ref a {
-  color: #2563eb;
+  color: var(--link);
   text-decoration: none;
 }
 html[lang="zh-CN"] .footnotes {
   margin: 2.5rem 0 1.75rem;
   padding-top: 1rem;
-  border-top: 1px solid #e5e7eb;
-  color: #64748b;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
   font-size: 0.9rem;
 }
 html[lang="zh-CN"] .footnotes-heading {
   margin-bottom: 0.5rem;
-  color: #475569;
+  color: var(--ink);
   font-size: 0.95rem;
   font-weight: 650;
 }
@@ -1090,7 +1090,7 @@ html[lang="zh-CN"] .footnote-item li {
   line-height: 1.58;
 }
 html[lang="zh-CN"] .footnote-backref {
-  color: #64748b;
+  color: var(--muted);
   font-size: 0.86rem;
   text-decoration: none;
 }
@@ -1109,7 +1109,7 @@ html[lang="zh-CN"] body.cover-page .chapter-pager {
 html[lang="zh-CN"] .book-figure figcaption,
 html[lang="zh-CN"] figure.table-figure figcaption {
   margin-top: 0.75rem;
-  color: #64748b;
+  color: var(--muted);
   font-size: 0.92rem;
   font-weight: 500;
   line-height: 1.55;
@@ -1119,7 +1119,7 @@ html[lang="zh-CN"] .book-figure figcaption {
 }
 html[lang="zh-CN"] figure.table-figure figcaption,
 html[lang="zh-CN"] figure.code-listing figcaption {
-  color: #475569;
+  color: var(--ink);
   font-size: 0.95rem;
   font-weight: 650;
   line-height: 1.5;
